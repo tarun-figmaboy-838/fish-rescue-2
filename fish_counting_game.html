@@ -53,10 +53,10 @@
     transition:transform .3s ease, opacity .3s ease;
   }
   .pond[data-color="pink"]{
-    left:4.8%;
-    top:1.8%;
-    width:43.2%;
-    height:43.8%;
+    left:3.5%;
+    top:0.5%;
+    width:46%;
+    height:48%;
   }
 
   .pond[data-color="red"]{
@@ -142,7 +142,7 @@
   .pond-fishes img,
   .popup-pond .fish-floats img{
     position:absolute;
-    width:18%;
+    width:24%;
     height:auto;
     transform:translate(-50%,-50%);
     animation:fishFloatIdle 3.8s ease-in-out infinite;
@@ -268,17 +268,20 @@
     z-index:45;
     pointer-events:none;
   }
+  /* Genie anchored to the bottom-left corner. Native pose points up-left
+     (off-screen at this position), so the image is mirrored via the
+     genieBobFlipped animation — finger then points up-right toward the
+     ponds. Bubble sits up and to the right so the tail tip lands on the
+     turban (genieLeft + 15.2%). */
   #chooseGuide .genie-img{
     position:absolute;
-    left:50%;bottom:2%;
+    left:15%;bottom:0%;
     transform:translateX(-50%);
+    animation:genieBobFlipped 3s ease-in-out infinite;
   }
   #chooseGuide .thought{
     position:absolute;
-    /* Tail-tip offset from bubble center after scaleX(-1) is −15.2% of stage
-       (tail at x≈15.4% from bubble left, bubble width 44% → 0.346 × 44).
-       Centered tail wants left = 50% + 15.2% ≈ 65%. */
-    left:65.2%;top:17%;
+    left:30.2%;top:19%;
     width:44%;
     aspect-ratio:856/274;
     transform:translateX(-50%) scaleX(-1);
@@ -457,7 +460,7 @@
   .counter-fish{
     position:absolute;
     top:50%;
-    width:9.5%;
+    width:12.5%;
     max-width:none;
     aspect-ratio:860/600;
     transform:translate(-50%,-50%);
@@ -559,13 +562,13 @@
   }
   .fish-in-pond{
     position:absolute;
-    width:19%;
+    width:26%;
     transform:translate(-50%,-50%);
     cursor:pointer;
     z-index:5;
   }
   @media (max-width:900px){
-    .fish-in-pond{width:21%;}
+    .fish-in-pond{width:28%;}
   }
   .fish-in-pond .inner{
     display:block;
@@ -963,8 +966,8 @@ const COUNTING_FISH_POSITIONS = FISH_POSITIONS;
    stays inside the row for the current pond's target count. */
 function getFinalSlots(){
   const rightAnchor  = 92;  // % of row — center of newest (rightmost) fish
-  const leftLimit    = 10;  // % of row — leftmost fish center cannot pass this
-  const idealSpacing = 11;  // % of row — small gap between adjacent fish centers
+  const leftLimit    = 8;   // % of row — leftmost fish center cannot pass this
+  const idealSpacing = 12.5;// % of row — small gap between adjacent fish centers
   const n = collectedFish.length;
   if (n === 0) return [];
   const maxN = Math.max(1, target);
@@ -1342,15 +1345,11 @@ async function runChoosePondGuide(isNext = false){
   const text = isNext ? 'Choose the next pond!' : 'Choose a pond!';
   if (genieImg) genieImg.src = isNext ? 'assets/genie-2.png' : 'assets/genie-1.png';
 
-  /* Re-anchor the genie + bubble before they appear, so the "next pond"
-     visit shows the genie already standing next to the right pond — and
-     so the eventual idle-nudge hand on `firstAvail` shares a side with
-     the genie. */
+  /* Both "Choose a pond!" and "Choose the next pond!" share the same
+     bottom-left genie placement from CSS. Pass `false` so positionChooseGuide
+     clears any per-pond inline overrides instead of moving the genie. */
   const firstAvail = document.querySelector('.pond:not(.completed)');
-  positionChooseGuide(firstAvail, isNext);
-  /* Pulse + glow on the next target so the child sees it immediately,
-     even before the bubble has finished typing. First visit ("Choose a
-     pond!") shows no glow — every pond is fair game then. */
+  positionChooseGuide(firstAvail, false);
   if (isNext) setNextPondTarget(firstAvail);
   else        clearNextPondTarget();
 
@@ -1371,8 +1370,6 @@ async function runChoosePondGuide(isNext = false){
   guide.style.display = 'none';
   setGuideLock(false);
 
-  /* Hand appears only after 3s of idle on the next available pond — the
-     same pond the genie was visually pointing at above. */
   armIdleNudge(firstAvail, 3000);
 }
 
@@ -1448,30 +1445,34 @@ async function startCounting(color){
 
   buildSinglePond(color);
 
-  setGuideLock(true);
+  /* "Tap on each fish" genie shows only on the 1st level. After that the
+     child plays independently — the idle-nudge hand still appears if they
+     stall on the first fish. */
+  if (completed.size === 0){
+    setGuideLock(true);
 
-  const guide = document.getElementById('tapGuide');
-  guide.classList.remove('guide-vanish');
-  guide.style.display = '';
-  guide.style.opacity = '';
-  playGuideAppear(guide);
-  const textEl = document.getElementById('tapText');
-  textEl.textContent = '';
+    const guide = document.getElementById('tapGuide');
+    guide.classList.remove('guide-vanish');
+    guide.style.display = '';
+    guide.style.opacity = '';
+    playGuideAppear(guide);
+    const textEl = document.getElementById('tapText');
+    textEl.textContent = '';
 
-  await wait(500);
-  speak('Tap on each fish one by one.');
-  await typeText(textEl, 'Tap on each fish one by one.');
-  await wait(2000);
-  guide.classList.add('guide-vanish');
+    await wait(500);
+    speak('Tap on each fish one by one.');
+    await typeText(textEl, 'Tap on each fish one by one.');
+    await wait(2000);
+    guide.classList.add('guide-vanish');
 
-  await wait(550);
-  guide.style.display = 'none';
-  setGuideLock(false);
+    await wait(550);
+    guide.style.display = 'none';
+    setGuideLock(false);
+  }
 
   const pondEl = document.getElementById('singlePond');
   pondEl.querySelectorAll('.fish-in-pond').forEach(f => f.classList.add('tappable'));
   const firstFish = pondEl.querySelector('.fish-in-pond');
-  /* Hand appears only after 3s of idle on the first fish. */
   armIdleNudge(firstFish, 3000);
 }
 
@@ -1546,8 +1547,8 @@ function onFishTap(e, fishEl){
 
   setTimeout(() => fishEl.classList.add('gone'), 200);
 
-  /* Target clone width matches the permanent counter-fish width (9.5% of row width). */
-  const targetFishWidthPx = rowRect.width * 0.095;
+  /* Target clone width matches the permanent counter-fish width (12.5% of row width). */
+  const targetFishWidthPx = rowRect.width * 0.125;
   const clone = document.createElement('div');
   clone.className = 'fish-clone';
   clone.style.width = (fishRect.width) + 'px';
@@ -1639,7 +1640,15 @@ async function onPondComplete(){
   const selPond = document.querySelector('.pond[data-color="' + currentColor + '"]');
   if (selPond) selPond.classList.add('completed');
 
-  await showDoneCelebration('Well done!');
+  /* "Well done!" genie celebration shows only on the 1st level. After
+     that the audible celebration (confetti, success chime, spoken count)
+     still fires but the screen stays free of guide overlays. */
+  if (completed.size === 1){
+    await showDoneCelebration('Well done!');
+  } else {
+    playApplause(1200);
+    await wait(1500);
+  }
 
   document.getElementById('screen-count').classList.remove('active');
 
