@@ -53,31 +53,31 @@
     transition:transform .3s ease, opacity .3s ease;
   }
   .pond[data-color="pink"]{
-    left:3.5%;
-    top:0.5%;
-    width:46%;
+    left:2.5%;
+    top:3.5%;
+    width:48%;
     height:48%;
   }
 
   .pond[data-color="red"]{
-    left:52.0%;
-    top:1.8%;
-    width:43.2%;
-    height:43.8%;
+    left:50.5%;
+    top:4.5%;
+    width:46%;
+    height:46%;
   }
 
   .pond[data-color="yellow"]{
-    left:4.8%;
-    top:51.0%;
-    width:43.2%;
-    height:43.8%;
+    left:3.5%;
+    top:51.5%;
+    width:46%;
+    height:46%;
   }
 
   .pond[data-color="green"]{
-    left:52.0%;
-    top:51.0%;
-    width:43.2%;
-    height:43.8%;
+    left:50.5%;
+    top:51.5%;
+    width:46%;
+    height:46%;
   }
 
   .pond:hover{transform:scale(1.025);}
@@ -142,7 +142,7 @@
   .pond-fishes img,
   .popup-pond .fish-floats img{
     position:absolute;
-    width:24%;
+    width:22%;
     height:auto;
     transform:translate(-50%,-50%);
     animation:fishFloatIdle 3.8s ease-in-out infinite;
@@ -251,7 +251,7 @@
      portrait) renders at the same visible height across all guide screens.
      Width auto-adjusts to keep the image aspect intact. */
   .guide .genie-img{
-    height:56%;
+    height:50%;
     width:auto;
     max-width:none;
   }
@@ -281,12 +281,12 @@
   }
   #chooseGuide .thought{
     position:absolute;
-    left:30.2%;top:19%;
-    width:44%;
+    left:26.8%;top:32.6%;
+    width:34%;
     aspect-ratio:856/274;
     transform:translateX(-50%) scaleX(-1);
   }
-  #chooseText{font-size:clamp(32px,2.8vw,56px);}
+  #chooseText{font-size:clamp(20px,2vw,40px);}
 
   /* SCREEN: Tap fish — large bottom-left genie, bubble above-right. */
   #tapGuide{
@@ -302,12 +302,12 @@
   }
   #tapGuide .thought{
     position:absolute;
-    left:31%;top:21%;
-    width:44%;
+    left:27.8%;top:32.6%;
+    width:34%;
     aspect-ratio:856/274;
     transform:translateX(-50%) scaleX(-1);
   }
-  #tapText{font-size:clamp(32px,2.8vw,56px);}
+  #tapText{font-size:clamp(20px,2vw,40px);}
 
   /* SCREEN: Well done — celebration genie at bottom-left, bubble above-right. */
   #doneGuide{
@@ -323,12 +323,12 @@
   }
   #doneGuide .thought{
     position:absolute;
-    left:31%;top:21%;
-    width:44%;
+    left:27.8%;top:32.6%;
+    width:34%;
     aspect-ratio:856/274;
     transform:translateX(-50%) scaleX(-1);
   }
-  #doneText{font-size:clamp(32px,2.8vw,56px);}
+  #doneText{font-size:clamp(20px,2vw,40px);}
 
   /* SCREEN: Final overlay — centered genie, bubble above-right. */
   #overlayGuide{
@@ -345,12 +345,12 @@
   }
   #overlayGuide .thought{
     position:absolute;
-    left:65%;top:18%;
-    width:44%;
+    left:61.8%;top:30.6%;
+    width:34%;
     aspect-ratio:856/274;
     transform:translateX(-50%) scaleX(-1);
   }
-  #overlayText{font-size:clamp(32px,2.8vw,56px);}
+  #overlayText{font-size:clamp(20px,2vw,40px);}
 
   /* ===== Tap hand — pointer-finger asset whose fingertip lands on the
      tap target. The asset (hand-nudge.svg) has its fingertip at ~28%
@@ -422,6 +422,39 @@
     0%  {transform:translate(0,0) rotate(0);opacity:1;}
     100%{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0;}
   }
+  /* Water-themed bubble confetti — translucent bubbles (optionally tinted in
+     the four game colors) that float up and out with a gentle drift, then
+     pop. Replaces the paper-piece confetti for pond/win celebrations. */
+  .bubble-confetti{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:95;
+    border:1px solid rgba(255,255,255,.55);
+    --dx:0px;--dy:-260px;
+    animation:bubbleFloat 2s cubic-bezier(.25,.6,.4,1) forwards;
+  }
+  @keyframes bubbleFloat{
+    0%  {transform:translate(0,0) scale(.4);opacity:0;}
+    15% {opacity:1;}
+    80% {opacity:.95;}
+    100%{transform:translate(var(--dx),var(--dy)) scale(1.18);opacity:0;}
+  }
+  /* Expanding splash ring — a watery shockwave for the moment of completion. */
+  .splash-ring{
+    position:absolute;
+    width:40px;height:40px;
+    margin-left:-20px;margin-top:-20px;
+    border:4px solid rgba(140,210,255,.85);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:92;
+    animation:splashRing .7s ease-out forwards;
+  }
+  @keyframes splashRing{
+    0%  {transform:scale(0);opacity:.9;}
+    100%{transform:scale(3.4);opacity:0;}
+  }
 
   /* ===== Dim overlay ===== */
   .dim-overlay{
@@ -434,8 +467,8 @@
   /* ===== Counter bar (counting + summary share visuals) ===== */
   .counter-bar{
     position:absolute;
-    left:3%;top:2%;
-    width:94%;height:26%;
+    left:3%;top:1.5%;
+    width:94%;height:23%;
     max-width:none;
     aspect-ratio:auto;
     transform:none;
@@ -537,13 +570,13 @@
   /* ===== Single-pond counting area ===== */
   .play-area{
     position:absolute;
-    left:4%;top:30%;
-    width:92%;height:69%;
+    left:2%;top:28%;
+    width:96%;height:71%;
     display:flex;align-items:center;justify-content:center;
   }
   .single-pond{
     position:relative;
-    width:100%;height:100%;
+    width:108%;height:108%;
     max-width:none;max-height:none;
   }
   .single-pond-img{
@@ -555,20 +588,20 @@
      row, since the oval rim curves inward at top and bottom). */
   .single-pond .fish-safe-layer{
     position:absolute;
-    left:20%;top:26%;
-    width:60%;height:48%;
+    left:22%;top:22%;
+    width:56%;height:48%;
     overflow:visible;
     pointer-events:auto;
   }
   .fish-in-pond{
     position:absolute;
-    width:26%;
+    width:20%;
     transform:translate(-50%,-50%);
     cursor:pointer;
     z-index:5;
   }
   @media (max-width:900px){
-    .fish-in-pond{width:28%;}
+    .fish-in-pond{width:22%;}
   }
   .fish-in-pond .inner{
     display:block;
@@ -763,19 +796,6 @@
   }
   .caption.show{opacity:1;}
 
-  .restart-btn{
-    position:absolute;bottom:1.2%;right:1.2%;
-    padding:.45em 1em;
-    font-size:clamp(12px,1vw,18px);font-weight:800;
-    background:linear-gradient(180deg,#ff8fb5,#e0699a);
-    color:#fff;border:none;border-radius:30px;cursor:pointer;
-    box-shadow:0 4px 0 #b3457a,0 6px 12px rgba(0,0,0,.2);
-    font-family:'Lilita One',sans-serif;
-    opacity:0;animation:slideIn .6s ease 4.5s forwards;
-    z-index:30;
-  }
-  .restart-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b3457a;}
-
   /* ===== Start screen ===== */
   .start-banner{
     position:absolute;inset:0;
@@ -801,6 +821,175 @@
   @keyframes letsGoPulse{
     0%,100%{transform:scale(1);}
     50%{transform:scale(1.08);}
+  }
+
+  /* ===== Post-LBD WIN screen — an underwater, magical, kid-friendly grand
+     finale. Deep-ocean backdrop with light rays + swaying sea plants, a
+     glossy water-glass reward panel, fish "collectible" bubbles showing each
+     count, a big celebrating Genie, and rising 4-colour bubbles. No replay
+     control; this is the module's rewarding end state. */
+  #screen-postlbd{display:none;overflow:hidden;}
+  #screen-postlbd.active{display:block;}
+
+  /* Layer 1 — deep underwater gradient + central glow. */
+  .ocean-bg{
+    position:absolute;inset:0;z-index:1;
+    background:
+      radial-gradient(120% 85% at 50% 16%, rgba(150,235,255,.40), rgba(10,90,140,0) 58%),
+      linear-gradient(180deg,#1488c0 0%, #0b6298 42%, #06416e 78%, #042c4f 100%);
+  }
+  /* Swaying sea plants / coral along the floor (emoji, no assets). */
+  .ocean-floor{
+    position:absolute;left:0;right:0;bottom:0;height:26%;z-index:3;
+    display:flex;align-items:flex-end;justify-content:space-around;
+    font-size:clamp(38px,6vw,104px);line-height:1;
+    pointer-events:none;
+    filter:drop-shadow(0 6px 8px rgba(0,20,40,.45)) saturate(1.1);
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 55%);
+            mask-image:linear-gradient(180deg,transparent,#000 55%);
+  }
+  .ocean-floor span{transform-origin:bottom center;animation:plantSway 4.4s ease-in-out infinite;}
+  .ocean-floor span:nth-child(even){animation-duration:5.6s;font-size:.8em;}
+  .ocean-floor span:nth-child(3n){animation-delay:-1.5s;}
+  @keyframes plantSway{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+
+  /* Glossy water-glass reward panel. */
+  .win-panel{
+    position:absolute;
+    left:57%;top:45%;
+    transform:translate(-50%,-50%);
+    z-index:7;
+    width:50%;max-width:none;
+    padding:2.4% 3%;
+    text-align:center;
+    border-radius:38px;
+    background:linear-gradient(180deg,rgba(190,240,255,.34),rgba(70,165,220,.26));
+    border:2px solid rgba(255,255,255,.6);
+    box-shadow:0 18px 52px rgba(0,30,60,.5),
+               inset 0 3px 16px rgba(255,255,255,.6),
+               inset 0 -12px 26px rgba(0,55,105,.4);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    animation:panelIn .7s cubic-bezier(.22,1.3,.6,1) both,
+              panelFloat 4.2s ease-in-out infinite .75s;
+  }
+  /* Top sheen highlight on the glass panel. */
+  .win-panel::before{
+    content:'';position:absolute;left:6%;right:6%;top:5%;height:34%;
+    border-radius:30px 30px 60px 60px/26px 26px 50px 50px;
+    background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0));
+    pointer-events:none;
+  }
+  @keyframes panelIn{
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.6);}
+    100%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  }
+  @keyframes panelFloat{
+    0%,100%{transform:translate(-50%,-50%) translateY(0);}
+    50%    {transform:translate(-50%,-50%) translateY(-10px);}
+  }
+
+  /* Playful shiny "Great Job!" heading. */
+  .win-title{
+    position:relative;
+    font-family:'Lilita One',sans-serif;
+    font-size:clamp(46px,6vw,108px);
+    line-height:1;
+    letter-spacing:1px;
+    /* Rich, darker playful gradient (warm gold → orange → deep pink). */
+    background:linear-gradient(to bottom,
+      #FFE45A 0%, #FFC933 28%, #FF9F1C 52%, #FF5C8D 78%, #D93B7B 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    -webkit-text-stroke:3px #083D77;   /* strong dark-blue outline for contrast */
+    text-shadow:0 4px 0 rgba(0,0,0,.25), 0 0 8px rgba(255,255,255,.12);
+    filter:saturate(1.08) contrast(1.05) drop-shadow(0 4px 6px rgba(0,15,40,.5));
+    animation:titlePop 2.6s ease-in-out infinite;
+  }
+  @keyframes titlePop{0%,100%{transform:scale(1) rotate(-1deg);}50%{transform:scale(1.05) rotate(1deg);}}
+  .win-msg{
+    font-family:'Lilita One',sans-serif;
+    font-size:clamp(17px,2.1vw,38px);
+    color:#fff;
+    text-shadow:0 2px 6px rgba(0,40,80,.65),0 0 12px rgba(120,225,255,.7);
+    margin-top:1.4%;
+  }
+
+  /* Fish "collectible" bubbles — one per colour, with its count badge. */
+  .win-fish{display:flex;justify-content:center;gap:3.4%;margin-top:2.6%;}
+  .fish-badge{
+    position:relative;
+    width:20%;aspect-ratio:1;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 34% 30%,
+               rgba(255,255,255,.92),var(--tint) 60%,rgba(255,255,255,0) 82%);
+    border:2px solid rgba(255,255,255,.7);
+    box-shadow:0 6px 16px rgba(0,30,60,.45),inset 0 0 14px rgba(255,255,255,.55);
+    opacity:0;transform:scale(.4);
+    animation:badgeBob 3.2s ease-in-out infinite;
+  }
+  .fish-badge.in{animation:badgePop .55s cubic-bezier(.2,1.5,.5,1) forwards,
+                           badgeBob 3.2s ease-in-out infinite .55s;}
+  .fish-badge:nth-child(2){animation-delay:.1s;}
+  .fish-badge:nth-child(3){animation-delay:.2s;}
+  .fish-badge:nth-child(4){animation-delay:.3s;}
+  .fish-badge img{width:66%;height:auto;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));}
+  .fish-badge .cnt{
+    position:absolute;right:-10%;bottom:-12%;
+    min-width:48%;
+    padding:.06em .3em;
+    display:flex;align-items:center;justify-content:center;
+    background:#fff;color:#7a0026;
+    border:4px solid var(--tint);
+    border-radius:999px;
+    font-family:'Lilita One',sans-serif;
+    font-size:clamp(24px,3vw,54px);line-height:1;
+    box-shadow:0 4px 10px rgba(0,0,0,.35);
+  }
+  .fish-badge.pink  {--tint:rgba(255,120,190,.85);}
+  .fish-badge.green {--tint:rgba(120,210,120,.85);}
+  .fish-badge.red   {--tint:rgba(255,110,110,.9);}
+  .fish-badge.yellow{--tint:rgba(255,210,80,.92);}
+  @keyframes badgePop{0%{opacity:0;transform:scale(.4);}60%{opacity:1;transform:scale(1.18);}100%{opacity:1;transform:scale(1);}}
+  @keyframes badgeBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+
+  /* Big celebrating Genie — the reward character. */
+  .postlbd-genie{
+    position:absolute;
+    left:20%;bottom:-2%;
+    height:70%;width:auto;
+    transform:translateX(-50%);
+    z-index:8;
+    animation:genieCelebrate 1.6s ease-in-out infinite;
+    filter:drop-shadow(0 12px 22px rgba(0,20,45,.5));
+    pointer-events:none;
+  }
+  @keyframes genieCelebrate{
+    0%,100%{transform:translateX(-50%) translateY(0) rotate(-3deg);}
+    50%    {transform:translateX(-50%) translateY(-18px) rotate(3deg);}
+  }
+
+  /* Rising 4-colour ocean bubbles (tinted in JS). */
+  .postlbd-bubble{
+    position:absolute;
+    bottom:-4%;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,
+               rgba(255,255,255,.9),rgba(180,225,255,.35) 60%,rgba(140,200,255,0));
+    border:1px solid rgba(255,255,255,.5);
+    z-index:5;
+    pointer-events:none;
+    animation:bubbleRise linear forwards;
+  }
+  @keyframes bubbleRise{
+    0%{transform:translateY(0) scale(.6);opacity:0;}
+    15%{opacity:.9;}
+    100%{transform:translateY(-115vh) scale(1.1);opacity:0;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .ocean-floor span,.win-panel,.win-title,.fish-badge,.postlbd-genie{
+      animation-duration:.001s !important;animation-iteration-count:1 !important;
+    }
   }
 </style>
 </head>
@@ -899,7 +1088,27 @@
       <div class="summary-shell"><span class="summary-number">5</span></div>
     </div>
     <div class="caption" id="summaryCaption"></div>
-    <button class="restart-btn" onclick="restartGame()">Play Again</button>
+  </div>
+
+  <!-- ============ SCREEN: POST-LBD WIN SCREEN (underwater finale) ====== -->
+  <div class="screen" id="screen-postlbd">
+    <div class="ocean-bg"></div>
+    <div class="ocean-floor">
+      <span>🌿</span><span>🪸</span><span>🐚</span><span>🌿</span><span>🪸</span><span>🌱</span>
+    </div>
+
+    <div class="win-panel">
+      <div class="win-title">Great Job!</div>
+      <div class="win-msg" id="winMsg">You counted all the fish!</div>
+      <div class="win-fish">
+        <div class="fish-badge pink"><img src="assets/fish-pink.png" alt=""><span class="cnt">8</span></div>
+        <div class="fish-badge green"><img src="assets/fish-green.png" alt=""><span class="cnt">7</span></div>
+        <div class="fish-badge red"><img src="assets/fish-red.png" alt=""><span class="cnt">6</span></div>
+        <div class="fish-badge yellow"><img src="assets/fish-yellow.png" alt=""><span class="cnt">5</span></div>
+      </div>
+    </div>
+
+    <img class="postlbd-genie" src="assets/genie-6.png" alt="">
   </div>
 
 </div>
@@ -929,34 +1138,56 @@ const PONDS_GIF = {
    counting screen for visual consistency. */
 const FISH_POSITIONS = {
   pink: [
-    {x:28,y:24}, {x:50,y:22}, {x:72,y:24},
-    {x:22,y:50}, {x:50,y:50}, {x:78,y:50},
-    {x:38,y:72}, {x:62,y:72}
+    {x:28,y:24}, {x:50,y:24}, {x:72,y:24},
+    {x:24,y:50}, {x:50,y:50}, {x:76,y:50},
+    {x:38,y:70}, {x:62,y:70}
   ],
 
   red: [
     {x:34,y:26}, {x:66,y:26},
-    {x:24,y:50}, {x:76,y:50},
-    {x:38,y:72}, {x:62,y:72}
+    {x:26,y:50}, {x:74,y:50},
+    {x:40,y:68}, {x:60,y:68}
   ],
 
   yellow: [
     {x:34,y:26}, {x:66,y:26},
     {x:50,y:50},
-    {x:36,y:72}, {x:64,y:72}
+    {x:38,y:70}, {x:62,y:70}
   ],
 
   green: [
     {x:32,y:24}, {x:68,y:24},
-    {x:22,y:50}, {x:50,y:50}, {x:78,y:50},
-    {x:38,y:72}, {x:62,y:72}
+    {x:24,y:50}, {x:50,y:50}, {x:76,y:50},
+    {x:38,y:70}, {x:62,y:70}
   ]
 };
 
-/* Counting screen reuses the same per-color pattern as the selection and
-   popup screens — single source of truth keeps all three pond views
-   visually consistent. */
-const COUNTING_FISH_POSITIONS = FISH_POSITIONS;
+/* Counting screen uses its OWN safe positions (separate from the selection /
+   popup patterns) because the single counting pond is larger and its water
+   oval has tighter margins — these coordinates keep every fish (body, tail and
+   glow) clear of the pond wall with even spacing. */
+const COUNTING_FISH_POSITIONS = {
+  pink: [
+    {x:28,y:24}, {x:50,y:22}, {x:72,y:24},
+    {x:25,y:50}, {x:50,y:50}, {x:75,y:50},
+    {x:38,y:72}, {x:62,y:72}
+  ],
+  green: [
+    {x:30,y:24}, {x:70,y:24},
+    {x:26,y:50}, {x:50,y:50}, {x:74,y:50},
+    {x:38,y:72}, {x:62,y:72}
+  ],
+  red: [
+    {x:34,y:26}, {x:66,y:26},
+    {x:28,y:50}, {x:72,y:50},
+    {x:40,y:70}, {x:60,y:70}
+  ],
+  yellow: [
+    {x:34,y:26}, {x:66,y:26},
+    {x:50,y:50},
+    {x:38,y:70}, {x:62,y:70}
+  ]
+};
 
 /* Slot layout — the lane is anchored on the SHELL side. Newest collected
    fish sits at `rightAnchor` with a small visible gap to the shell; every
@@ -1055,32 +1286,144 @@ function playGuideAppear(guide){
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function ensureAudio(){ if (audioCtx.state === 'suspended') audioCtx.resume(); }
 
+/* Counting confirmation — a soft, rounded "pip" when a fish lands on the
+   counter. Triangle wave with a gentle upward bend reads as a friendly
+   count tick rather than a balloon pop. */
 function playPop(){
   ensureAudio();
   const o = audioCtx.createOscillator();
   const g = audioCtx.createGain();
-  o.type = 'sine';
-  o.frequency.setValueAtTime(600, audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + .08);
-  g.gain.setValueAtTime(.22, audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + .15);
+  const t = audioCtx.currentTime;
+  o.type = 'triangle';
+  o.frequency.setValueAtTime(380, t);
+  o.frequency.exponentialRampToValueAtTime(720, t + .09);
+  g.gain.setValueAtTime(.0001, t);
+  g.gain.exponentialRampToValueAtTime(.22, t + .02);
+  g.gain.exponentialRampToValueAtTime(.001, t + .16);
   o.connect(g); g.connect(audioCtx.destination);
-  o.start(); o.stop(audioCtx.currentTime + .15);
+  o.start(t); o.stop(t + .17);
 }
 
-function playSplash(){
+/* Fish-tap sound — a fun "magic water reward": a quick rising sparkle
+   arpeggio (the "collected!" shimmer) layered over a soft water plip and a
+   gentle splash sweep. Kid-friendly and celebratory, with no balloon-pop. */
+function playFishCollect(){
   ensureAudio();
-  const noise = audioCtx.createBufferSource();
-  const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * .2, audioCtx.sampleRate);
+  const t = audioCtx.currentTime;
+
+  /* 1) Rising sparkle arpeggio — the magic "collected!" shimmer (C–E–G–C). */
+  const notes = [523.25, 659.25, 783.99, 1046.50];
+  notes.forEach((f, i) => {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    const st = t + i * 0.045;
+    o.type = 'triangle';
+    o.frequency.value = f;
+    g.gain.setValueAtTime(.0001, st);
+    g.gain.exponentialRampToValueAtTime(.20, st + .015);
+    g.gain.exponentialRampToValueAtTime(.001, st + .18);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(st); o.stop(st + .2);
+  });
+
+  /* 2) Soft water plip underneath (sine dropping in pitch). */
+  const w = audioCtx.createOscillator();
+  const wg = audioCtx.createGain();
+  w.type = 'sine';
+  w.frequency.setValueAtTime(440, t);
+  w.frequency.exponentialRampToValueAtTime(180, t + .16);
+  wg.gain.setValueAtTime(.0001, t);
+  wg.gain.exponentialRampToValueAtTime(.16, t + .02);
+  wg.gain.exponentialRampToValueAtTime(.001, t + .2);
+  w.connect(wg); wg.connect(audioCtx.destination);
+  w.start(t); w.stop(t + .22);
+
+  /* 3) Gentle splash shimmer — band-passed noise sweeping upward. */
+  const len = Math.floor(audioCtx.sampleRate * .18);
+  const buffer = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
   const data = buffer.getChannelData(0);
-  for (let i = 0; i < data.length; i++)
-    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
+  for (let i = 0; i < len; i++)
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 1.5);
+  const noise = audioCtx.createBufferSource();
   noise.buffer = buffer;
-  const filter = audioCtx.createBiquadFilter();
-  filter.type = 'lowpass'; filter.frequency.value = 800;
-  const g = audioCtx.createGain(); g.gain.value = .18;
-  noise.connect(filter); filter.connect(g); g.connect(audioCtx.destination);
-  noise.start();
+  const bp = audioCtx.createBiquadFilter();
+  bp.type = 'bandpass';
+  bp.frequency.setValueAtTime(900, t);
+  bp.frequency.exponentialRampToValueAtTime(3200, t + .18);
+  bp.Q.value = .8;
+  const ng = audioCtx.createGain(); ng.gain.value = .12;
+  noise.connect(bp); bp.connect(ng); ng.connect(audioCtx.destination);
+  noise.start(t);
+}
+
+/* ===== Background music — the looping MP3 (fun, magical, underwater feel).
+   Played directly through an <audio> element (NOT routed through WebAudio),
+   so it works reliably on file://, static hosts, and mobile without CORS
+   tainting. Ducking is done with a lightweight JS volume tween. Starts only
+   after a user gesture (the "Let's go" tap) per browser autoplay rules. */
+const BGM_SRC      = 'music/BG%20Music%209.mp3';
+const BGM_BASE     = 0.20;   // normal background level (~20%)
+const BGM_WIN      = 0.30;   // a touch louder on the win screen for excitement
+const BGM_DUCK_MUL = 0.35;   // ducked level = base × this, while VO/SFX play
+
+let bgmEl = null;
+let musicStarted = false;
+let bgmBaseLevel = BGM_BASE;  // level to return to after ducking
+let bgmDuckHolds = 0;         // ref-count of active duck requests
+let bgmTween = null;          // active volume-tween interval
+
+/* Smoothly tween the <audio> element volume to `level` over `ramp` seconds. */
+function setBgmLevel(level, ramp = 0.4){
+  if (!bgmEl) return;
+  level = Math.max(0, Math.min(1, level));
+  if (bgmTween){ clearInterval(bgmTween); bgmTween = null; }
+  const start = bgmEl.volume;
+  const dur = Math.max(1, ramp * 1000);
+  const t0 = performance.now();
+  bgmTween = setInterval(() => {
+    const k = Math.min(1, (performance.now() - t0) / dur);
+    bgmEl.volume = start + (level - start) * k;
+    if (k >= 1){ clearInterval(bgmTween); bgmTween = null; }
+  }, 40);
+}
+
+/* Lower the music while something important is playing; restore when the last
+   hold is released. Ref-counted so overlapping VO/SFX don't restore early. */
+function duckBgm(){
+  bgmDuckHolds++;
+  setBgmLevel(bgmBaseLevel * BGM_DUCK_MUL, 0.2);
+}
+function releaseBgm(){
+  bgmDuckHolds = Math.max(0, bgmDuckHolds - 1);
+  if (bgmDuckHolds === 0) setBgmLevel(bgmBaseLevel, 0.6);
+}
+
+function startBgMusic(){
+  if (musicStarted) return;
+  musicStarted = true;
+
+  bgmEl = new Audio(BGM_SRC);
+  bgmEl.loop = true;          // seamless looping
+  bgmEl.preload = 'auto';
+  bgmEl.volume = 0;           // start silent, then fade in
+
+  const tryPlay = () => {
+    const p = bgmEl.play();
+    if (p && p.catch) p.catch(() => {
+      /* Autoplay still blocked — retry on the next user interaction. */
+      document.addEventListener('click', tryPlay, { once:true });
+    });
+  };
+  tryPlay();
+
+  /* Gentle fade-in to base level (no abrupt start). */
+  setBgmLevel(bgmBaseLevel, 1.4);
+}
+function stopBgMusic(){
+  if (!musicStarted) return;
+  setBgmLevel(0.0001, 0.6);
+  setTimeout(() => { if (bgmEl) try { bgmEl.pause(); } catch(e){} }, 700);
+  musicStarted = false;
 }
 
 function playApplause(durationMs = 1800){
@@ -1138,6 +1481,17 @@ function speak(text){
   const voices = speechSynthesis.getVoices();
   const preferred = voices.find(v => /female|samantha|karen|google.*us|google.*uk/i.test(v.name)) || voices[0];
   if (preferred) u.voice = preferred;
+
+  /* Duck the background music for the duration of this narration, then
+     restore it. A safety timer guarantees the hold is released even if the
+     browser doesn't fire onend (e.g. when a later speak() cancels this one). */
+  duckBgm();
+  let released = false;
+  const release = () => { if (!released){ released = true; releaseBgm(); } };
+  u.onend = release;
+  u.onerror = release;
+  setTimeout(release, Math.min(9000, 600 + text.length * 90));
+
   speechSynthesis.speak(u);
 }
 if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
@@ -1229,20 +1583,78 @@ function spawnConfetti(parent, count = 60){
   }
 }
 
+/* The four game colours, used to tint celebration bubbles. */
+const GAME_BUBBLE_TINTS = [
+  'rgba(255,150,200,.7)',  // pink
+  'rgba(120,220,150,.65)', // green
+  'rgba(255,120,120,.65)', // red
+  'rgba(255,225,110,.7)',  // yellow
+  'rgba(255,255,255,.6)'   // clear water bubble
+];
+
+/* Water-themed bubble confetti — replaces paper confetti. Bubbles rise and
+   drift out from the centre. Pass a custom `palette` (e.g. the four game
+   colours) for the final win screen. */
+function spawnBubbleConfetti(parent, count = 46, palette = GAME_BUBBLE_TINTS){
+  for (let i = 0; i < count; i++){
+    const b = document.createElement('div');
+    b.className = 'bubble-confetti';
+    const size = 10 + Math.random() * 30;
+    b.style.width  = size + 'px';
+    b.style.height = size + 'px';
+    b.style.left = (34 + Math.random() * 32) + '%';
+    b.style.top  = (52 + Math.random() * 28) + '%';
+    const tint = palette[Math.floor(Math.random() * palette.length)];
+    b.style.background = 'radial-gradient(circle at 32% 28%,' +
+      'rgba(255,255,255,.95),' + tint + ' 58%,rgba(255,255,255,0) 74%)';
+    const dx = (Math.random() - 0.5) * 240;
+    const dy = -(170 + Math.random() * 280);
+    b.style.setProperty('--dx', dx + 'px');
+    b.style.setProperty('--dy', dy + 'px');
+    b.style.animationDuration = (1.6 + Math.random() * 1.2) + 's';
+    parent.appendChild(b);
+    setTimeout(() => b.remove(), 3000);
+  }
+}
+
+/* Expanding watery splash ring at a stage-pixel point. */
+function spawnSplashRing(x, y, parent){
+  const r = document.createElement('div');
+  r.className = 'splash-ring';
+  r.style.left = x + 'px';
+  r.style.top  = y + 'px';
+  parent.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
+
+/* A short burst of water effects (splash rings + sparkles) scattered across
+   the upper-middle of the stage — used for pond-completion celebration. */
+function spawnWaterBurst(stage, bursts = 5){
+  const sr = stage.getBoundingClientRect();
+  for (let k = 0; k < bursts; k++){
+    setTimeout(() => {
+      const x = sr.width  * (0.22 + Math.random() * 0.56);
+      const y = sr.height * (0.28 + Math.random() * 0.42);
+      spawnSplashRing(x, y, stage);
+      spawnSparkles(x, y, stage, 8);
+    }, k * 170);
+  }
+}
+
 /* ============ SCREEN 1: CHOOSE A POND ============ */
 
 /* Per-pond layouts for the "Choose the next pond!" guide.
 
    Each entry positions a FULL-SIZE genie (the shared .guide .genie-img
-   height:56% — same as every other guide screen, so visual consistency
+   height:50% — same as every other guide screen, so visual consistency
    holds) right next to the target pond, with the bubble parked on the
    side OPPOSITE to the pond so the target stays visible. The genie's
    art points up-left in its native pose; we mirror it horizontally for
    right-side targets so the finger always points toward the pond.
 
-   With genie height fixed at 56% and bubble height ≈ 25% of stage_h:
-     head_top_y = 100 − genieBottom − 56
-     bubbleTop  = head_top_y − 25
+   With genie height fixed at 50% and bubble height ≈ 19.4% of stage_h:
+     head_top_y = 100 − genieBottom − 50
+     bubbleTop  = head_top_y − 19.4
      tail x-offset from bubble center = ±15.2% of stage (sign by bubbleFlip)
 
    Pond grid (in stage %):
@@ -1267,9 +1679,9 @@ const CHOOSE_LAYOUTS = {
   green:  { genieLeft:70, genieBottom:0, bubbleFlip:false, genieFlip:true  }
 };
 
-const GENIE_HEIGHT_PCT = 56;   /* matches .guide .genie-img CSS */
-const BUBBLE_H_PCT     = 25;
-const TAIL_OFFSET_PCT  = 15.2;
+const GENIE_HEIGHT_PCT = 50;   /* matches .guide .genie-img CSS */
+const BUBBLE_H_PCT     = 19.4; /* bubble width 34% × (274/856) × (16/9) */
+const TAIL_OFFSET_PCT  = 11.8; /* 0.346 × bubble width 34% */
 
 function positionChooseGuide(targetPond, isNext){
   const guide = document.getElementById('chooseGuide');
@@ -1504,7 +1916,7 @@ function onFishTap(e, fishEl){
   fishEl.dataset.flying = '1';
   noteUserInteraction();
   ensureAudio();
-  playSplash();
+  playFishCollect();
 
   const pondFishImg = fishEl.querySelector('img');
   if (pondFishImg) pondFishImg.src = PONDS_GIF[currentColor];
@@ -1633,35 +2045,166 @@ function onFishTap(e, fishEl){
 /* ============ POND COMPLETE ============ */
 async function onPondComplete(){
   playSuccess();
-  spawnConfetti(document.getElementById('game'), 60);
+  /* Water-themed celebration: bubble confetti + splash rings + sparkles. */
+  const stage = document.getElementById('game');
+  spawnBubbleConfetti(stage, 46);
+  spawnWaterBurst(stage, 5);
   speak(target + ' ' + PONDS[currentColor].word + ' fishes!');
 
   completed.add(currentColor);
   const selPond = document.querySelector('.pond[data-color="' + currentColor + '"]');
   if (selPond) selPond.classList.add('completed');
 
-  /* "Well done!" genie celebration shows only on the 1st level. After
-     that the audible celebration (confetti, success chime, spoken count)
-     still fires but the screen stays free of guide overlays. */
-  if (completed.size === 1){
-    await showDoneCelebration('Well done!');
-  } else {
-    playApplause(1200);
-    await wait(1500);
-  }
+  /* The clapping/celebration Genie appears on EVERY completed pond. */
+  await showDoneCelebration('Well done!');
 
   document.getElementById('screen-count').classList.remove('active');
 
   if (completed.size === 4){
-    document.getElementById('screen-select').classList.add('active');
-    await showCountFishOverlay();
-    document.getElementById('screen-select').classList.remove('active');
+    /* All ponds counted — go straight to the summary. The "Let us count the
+       fish in each pond." overlay already played as the intro, so we don't
+       repeat it here. */
     document.getElementById('screen-summary').classList.add('active');
     await runSummarySequence();
-  } else {
+    await wait(2400);
+    showPostLbd();
+  } else if (completed.size === 1){
+    /* First pond done — show the "Choose the next pond!" Genie guide ONCE. */
     document.getElementById('screen-select').classList.add('active');
     runChoosePondGuide(true);
+  } else {
+    /* 2nd+ ponds — guide already shown once, so rely on visual cues only
+       (the pond glow + the idle hand nudge). The Genie does not repeat. */
+    document.getElementById('screen-select').classList.add('active');
+    returnToPondSelection();
   }
+}
+
+/* Lightweight return to the selection screen for the 2nd+ ponds — no genie,
+   no speech, no interaction lock. Just glow the next available pond and arm
+   the idle hand nudge in case the child hesitates. */
+function returnToPondSelection(){
+  document.getElementById('chooseGuide').style.display = 'none';
+  const firstAvail = document.querySelector('.pond:not(.completed)');
+  setNextPondTarget(firstAvail);
+  armIdleNudge(firstAvail, 2500);
+}
+
+/* A short rising "ta-da" ping for each star as it pops in. */
+function playStarPing(i){
+  ensureAudio();
+  const t = audioCtx.currentTime;
+  const freq = [659.25, 783.99, 1046.50][i] || 880;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'triangle';
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(.0001, t);
+  g.gain.exponentialRampToValueAtTime(.3, t + .02);
+  g.gain.exponentialRampToValueAtTime(.001, t + .45);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(t); o.stop(t + .5);
+}
+
+/* Continuously rise bubbles in the four game colours for the duration of the
+   win screen, so the reward screen reads as a colourful ocean of pink, green,
+   red and yellow bubbles. */
+const POSTLBD_BUBBLE_TINTS = [
+  'rgba(255,150,200,.75)',  // pink
+  'rgba(120,220,150,.7)',   // green
+  'rgba(255,120,120,.7)',   // red
+  'rgba(255,225,110,.78)'   // yellow
+];
+function spawnPostLbdBubbles(stage){
+  for (let i = 0; i < 6; i++){
+    const b = document.createElement('div');
+    b.className = 'postlbd-bubble';
+    const size = 12 + Math.random() * 40;
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    b.style.left = (Math.random() * 100) + '%';
+    const tint = POSTLBD_BUBBLE_TINTS[i % POSTLBD_BUBBLE_TINTS.length];
+    b.style.background = 'radial-gradient(circle at 35% 30%,' +
+      'rgba(255,255,255,.92),' + tint + ' 60%,rgba(255,255,255,0) 78%)';
+    b.style.animationDuration = (4 + Math.random() * 4) + 's';
+    b.style.animationDelay = (Math.random() * 1.2) + 's';
+    stage.appendChild(b);
+    setTimeout(() => b.remove(), 9000);
+  }
+}
+
+/* ============ POST-LBD WIN SCREEN ============ */
+async function showPostLbd(){
+  document.getElementById('screen-summary').classList.remove('active');
+  const screen = document.getElementById('screen-postlbd');
+  const stage  = document.getElementById('game');
+
+  screen.classList.add('active');
+
+  /* Lift the music a little for extra excitement on the win screen — the
+     same track, just slightly louder. New base is used by duck/release too. */
+  bgmBaseLevel = BGM_WIN;
+  setBgmLevel(BGM_WIN, 1.2);
+
+  /* Sync each fish bubble's count to the real pond data. */
+  ['pink','green','red','yellow'].forEach(c => {
+    const badge = screen.querySelector('.fish-badge.' + c + ' .cnt');
+    if (badge && PONDS[c]) badge.textContent = PONDS[c].count;
+  });
+
+  /* Pick a playful, kid-friendly winning message. */
+  const MESSAGES = [
+    'You counted all the fish!',
+    'You are a counting champ!',
+    'Amazing counting!',
+    'You counted all the fish!',
+    'You are an ocean hero!'
+  ];
+  const msg = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+  const msgEl = document.getElementById('winMsg');
+  if (msgEl) msgEl.textContent = msg;
+
+  /* Big celebratory chime + applause + narration. */
+  playSuccess();
+  setTimeout(() => playApplause(2600), 150);
+  speak('Great job! ' + msg);
+
+  /* Water-themed bubble confetti in the four game colours — one big burst
+     then two follow-ups. */
+  spawnBubbleConfetti(stage, 90, GAME_BUBBLE_TINTS);
+  setTimeout(() => spawnBubbleConfetti(stage, 70, GAME_BUBBLE_TINTS), 700);
+  setTimeout(() => spawnBubbleConfetti(stage, 70, GAME_BUBBLE_TINTS), 1500);
+
+  /* Rising bubbles, refreshed continuously so the ocean feel persists. */
+  spawnPostLbdBubbles(stage);
+  const bubbleLoop = setInterval(() => {
+    if (!screen.classList.contains('active')){ clearInterval(bubbleLoop); return; }
+    spawnPostLbdBubbles(stage);
+  }, 1400);
+
+  /* Pop the four fish "collectible" bubbles in one by one, each with a rising
+     magical ping and a little sparkle burst. */
+  const badges = screen.querySelectorAll('.win-fish .fish-badge');
+  badges.forEach((b, i) => {
+    setTimeout(() => {
+      b.classList.add('in');
+      playStarPing(i % 3);
+      const r = b.getBoundingClientRect();
+      const sr = stage.getBoundingClientRect();
+      spawnSparkles((r.left + r.width/2) - sr.left, (r.top + r.height/2) - sr.top, stage, 12);
+    }, 700 + i * 320);
+  });
+
+  /* Magical sparkle shimmer around the reward panel after the badges land. */
+  setTimeout(() => {
+    const panel = screen.querySelector('.win-panel');
+    const r = panel.getBoundingClientRect();
+    const sr = stage.getBoundingClientRect();
+    const cx = (r.left + r.width/2) - sr.left;
+    const cy = (r.top + r.height/2) - sr.top;
+    spawnSparkles(cx, cy, stage, 18);
+    setTimeout(() => spawnSparkles(cx, cy, stage, 16), 500);
+  }, 2200);
 }
 
 /* ============ COUNTING DONE CELEBRATION ============ */
@@ -1676,6 +2219,8 @@ async function showDoneCelebration(text){
   playGuideAppear(guide);
   textEl.textContent = '';
 
+  /* Duck the music under the applause celebration, restore when it ends. */
+  duckBgm();
   playApplause(1800);
 
   await wait(300);
@@ -1685,6 +2230,7 @@ async function showDoneCelebration(text){
   guide.classList.add('guide-vanish');
   await wait(550);
   guide.style.display = 'none';
+  releaseBgm();
   setGuideLock(false);
 }
 
@@ -1782,20 +2328,33 @@ async function runSummarySequence(){
     spawnSparkles(sx, sy, stage, 14);
     setTimeout(() => spawnSparkles(sx, sy, stage, 12), 600);
 
-    /* Fish bounce one-by-one — a small wave along the row. Each fish
-       gets its own short bounce on top of its idle wave; we clear the
-       celebrate class after the bounce so the idle animation alone runs
-       between sequences. */
+    /* Fish bounce in a clear wave — EVERY fish in the row pops, synced to the
+       voice-over. The idle wave sets a per-fish inline animation-delay; that
+       same delay would otherwise also delay the bounce (so later fish never
+       bounced before the class was cleared). We zero the delay for the bounce
+       so it fires immediately at its scheduled step, then restore the idle
+       stagger afterwards. The wave + the row wait scale with the fish count so
+       the longest rows (8 pink) finish before the next row starts. */
+    const n = fishes.length;
+    const stagger = 110;              // ms between each fish in the wave
+    const bounceMs = 800;             // hold the bounce class long enough to play
     fishes.forEach((f, i) => {
       setTimeout(() => {
+        f.style.animationDelay = '0s';
         f.classList.remove('fish-celebrate');
         void f.offsetWidth;
         f.classList.add('fish-celebrate');
-        setTimeout(() => f.classList.remove('fish-celebrate'), 720);
-      }, i * 90);
+        setTimeout(() => {
+          f.classList.remove('fish-celebrate');
+          f.style.animationDelay = (i * 0.22) + 's';   // restore idle-wave stagger
+        }, bounceMs);
+      }, i * stagger);
     });
 
-    await wait(1700);
+    /* Wait for the whole wave (last fish starts at (n-1)*stagger) plus the
+       bounce to finish — and at least long enough to cover the spoken line. */
+    const rowWait = Math.max(2000, (n - 1) * stagger + bounceMs + 600);
+    await wait(rowWait);
 
     shell.classList.remove('shell-celebrate');
     numEl.classList.remove('number-celebrate');
@@ -1808,15 +2367,12 @@ async function runSummarySequence(){
   speak('Wonderful! You counted all the fish!');
 }
 
-function restartGame(){
-  location.reload();
-}
-
 /* ============ INIT ============ */
 fillSelectionPonds();
 
 document.getElementById('letsGoBtn').addEventListener('click', async () => {
   ensureAudio();
+  startBgMusic();
   document.getElementById('screen-start').classList.remove('active');
   document.getElementById('screen-select').classList.add('active');
   await wait(300);
