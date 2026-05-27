@@ -485,7 +485,8 @@
      the counter SVG. Fish appear directly inside the original blue water. */
   .counter-fish-row{
     position:absolute;
-    left:4%;right:18%;
+    left:5%;
+    right:20%;
     top:22%;bottom:10%;
     overflow:hidden;
     pointer-events:none;
@@ -493,7 +494,7 @@
   .counter-fish{
     position:absolute;
     top:50%;
-    width:12.5%;
+    width:11%;
     max-width:none;
     aspect-ratio:860/600;
     transform:translate(-50%,-50%);
@@ -1196,15 +1197,29 @@ const COUNTING_FISH_POSITIONS = {
    lane that grows leftward. Spacing is clamped so even the leftmost slot
    stays inside the row for the current pond's target count. */
 function getFinalSlots(){
-  const rightAnchor  = 92;  // % of row — center of newest (rightmost) fish
-  const leftLimit    = 8;   // % of row — leftmost fish center cannot pass this
-  const idealSpacing = 12.5;// % of row — small gap between adjacent fish centers
-  const n = collectedFish.length;
-  if (n === 0) return [];
-  const maxN = Math.max(1, target);
-  const fitSpacing = maxN > 1 ? (rightAnchor - leftLimit) / (maxN - 1) : idealSpacing;
-  const spacing = Math.min(idealSpacing, fitSpacing);
-  return Array.from({length: n}, (_, i) => rightAnchor - (n - 1 - i) * spacing);
+
+  const slots = [];
+
+  const total = collectedFish.length;
+
+  if(total <= 0) return slots;
+
+  // safe padding inside bar
+  const startX = 10;
+
+  // spacing between fish
+  const gap = 11;
+
+  for(let i = 0; i < total; i++){
+
+    slots.push({
+      x: startX + (i * gap),
+      y: 50
+    });
+
+  }
+
+  return slots;
 }
 
 /* Smooth rearrange — every fish transitions toward its slot. When a new
@@ -1212,11 +1227,34 @@ function getFinalSlots(){
    the new fish floats from the LEFT entry point to the rightmost slot
    (nearest the shell). All transitions share the same CSS easing for a
    coordinated lane shift. */
+/* Horizontal slot (in % of the counter row width) for the index-th
+   collected fish. Fish fill the bar left → right with even spacing based
+   on the pond's total target, stopping before the shell at the right. */
+function getCounterSlotPct(index){
+  const leftPad = 7;
+  const rightPad = 78; // stop before shell area
+  if (target <= 1) return 50;
+
+  const gap = (rightPad - leftPad) / (target - 1);
+  return leftPad + index * gap;
+}
+
 function layoutCollectedFishSmooth(){
+
   const slots = getFinalSlots();
-  collectedFish.forEach((fish, i) => {
-    fish.style.left = slots[i] + '%';
+
+  collectedFish.forEach((fish, index)=>{
+
+    const slot = slots[index];
+
+    fish.style.transition =
+      'left 850ms cubic-bezier(.22,.9,.25,1), top 850ms cubic-bezier(.22,.9,.25,1)';
+
+    fish.style.left = slot.x + '%';
+    fish.style.top = slot.y + '%';
+
   });
+
 }
 
 /* Cubic-bezier(.22,.9,.25,1) easing for the fish jump. */
@@ -1424,6 +1462,46 @@ function stopBgMusic(){
   setBgmLevel(0.0001, 0.6);
   setTimeout(() => { if (bgmEl) try { bgmEl.pause(); } catch(e){} }, 700);
   musicStarted = false;
+}
+
+/* =========================
+   WIN SCREEN MUSIC
+========================= */
+
+const WIN_MUSIC_SRC = 'music/Golden Fish Win (1).mp3';
+
+let winMusic = null;
+
+function playWinMusic(){
+  try{
+    // softly reduce bg music
+    if(bgmEl){
+      setBgmLevel(0.05, 0.8);
+    }
+
+    if(!winMusic){
+      winMusic = new Audio(WIN_MUSIC_SRC);
+      winMusic.loop = true;
+      winMusic.preload = 'auto';
+    }
+
+    winMusic.volume = 0;
+    winMusic.play();
+
+    // smooth fade in
+    let v = 0;
+    const fade = setInterval(()=>{
+      v += 0.03;
+      if(v >= 0.42){
+        v = 0.42;
+        clearInterval(fade);
+      }
+      winMusic.volume = v;
+    }, 80);
+
+  }catch(e){
+    console.log(e);
+  }
 }
 
 function playApplause(durationMs = 1800){
@@ -1940,19 +2018,15 @@ function onFishTap(e, fishEl){
   const stage = document.getElementById('game');
   const stageRect = stage.getBoundingClientRect();
 
-  /* Every fish lands at the same LEFT entry point inside the bar — far
-     enough in from the row's left edge to keep a small visible gap
-     between the fish and the bar's left border. After a short pause,
-     layoutCollectedFishSmooth() floats it rightward to its slot (newest
-     fish ends up nearest the shell, with existing fish shifting left). */
-  const entryXpct = 6;
-  const entryX = rowRect.left + (entryXpct / 100) * rowRect.width;
-  const entryY = rowRect.top  + rowRect.height / 2;
+  /* Each fish flies directly to its own slot, left → right, with spacing
+     based on the pond's total target. currentCount is the 0-based index of
+     the fish about to be added (it's incremented later in onFishLand). */
+  const targetSlotPct = getCounterSlotPct(currentCount);
 
   const startX = fishRect.left - stageRect.left + fishRect.width / 2;
   const startY = fishRect.top  - stageRect.top  + fishRect.height / 2;
-  const endX   = entryX - stageRect.left;
-  const endY   = entryY - stageRect.top;
+  const endX   = rowRect.left + (targetSlotPct / 100) * rowRect.width - stageRect.left;
+  const endY   = rowRect.top  + rowRect.height / 2 - stageRect.top;
 
   /* Tiny sparkle burst on tap. */
   spawnSparkles(startX, startY, stage, 8);
@@ -2003,14 +2077,17 @@ function onFishTap(e, fishEl){
   function onFishLand(){
     clone.remove();
 
-    /* Step 1 — fish lands at the LEFT entry point and plays its tiny
-       bounce-in (.show animation). Force a reflow so the browser commits
-       the entry-x position before any future left-transition fires. */
+    /* Fish lands directly in its own slot and plays its tiny bounce-in
+       (.show animation). Force a reflow so the browser commits the slot
+       position before any future transition fires. */
     const cf = document.createElement('div');
     cf.className = 'counter-fish show';
-    cf.style.left = entryXpct + '%';
+    cf.style.left = targetSlotPct + '%';
+    cf.style.top = '50%';
     cf.innerHTML = '<img src="' + PONDS[currentColor].fish + '" alt="">';
     row.appendChild(cf);
+    cf.style.transform =
+      'translate(-50%, -50%) scale(0.8)';
     collectedFish.push(cf);
     void cf.offsetWidth;
 
@@ -2023,11 +2100,9 @@ function onFishTap(e, fishEl){
     numEl.classList.add('pop');
     speak(String(currentCount));
 
-    /* Step 2 — pause briefly at entry so the user can see the fish was
-       collected. Step 3 — float right to its slot (existing fish shift
-       left to keep the lane packed near the shell). */
+    /* The fish already flew straight to its slot, so there's no follow-up
+       move. PAUSE_MS is kept only to time the pond-complete celebration. */
     const PAUSE_MS = 850;
-    setTimeout(layoutCollectedFishSmooth, PAUSE_MS);
 
     if (currentCount < target){
       const next = pondEl.querySelector('.fish-in-pond:not(.gone)');
@@ -2135,16 +2210,19 @@ function spawnPostLbdBubbles(stage){
 
 /* ============ POST-LBD WIN SCREEN ============ */
 async function showPostLbd(){
+  playWinMusic();
   document.getElementById('screen-summary').classList.remove('active');
   const screen = document.getElementById('screen-postlbd');
   const stage  = document.getElementById('game');
 
   screen.classList.add('active');
 
-  /* Lift the music a little for extra excitement on the win screen — the
-     same track, just slightly louder. New base is used by duck/release too. */
-  bgmBaseLevel = BGM_WIN;
-  setBgmLevel(BGM_WIN, 1.2);
+  /* Only the Golden Fish Win track plays on this screen. Keep the looping
+     background music silenced so the two don't overlap. Pinning the base
+     level to ~0 also makes the narration's duck/release restore to silence
+     (releaseBgm() returns the bg track to bgmBaseLevel, not BGM_BASE). */
+  bgmBaseLevel = 0.0001;
+  setBgmLevel(0.0001, 1.2);
 
   /* Sync each fish bubble's count to the real pond data. */
   ['pink','green','red','yellow'].forEach(c => {
