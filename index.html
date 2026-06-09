@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#06416e" />
 <title>Fish Counting Game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,13 +18,21 @@
     background:#000;
     display:flex;align-items:center;justify-content:center;
     user-select:none;-webkit-user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    overscroll-behavior:none;
   }
 
   /* ===== Locked 16:9 stage — all internal layout is in % of this frame ===== */
   #game{
     position:relative;
+    /* vw/vh fallback for older browsers … */
     width:min(100vw,177.777vh);
     height:min(100vh,56.25vw);
+    /* … dynamic viewport units win where supported, so mobile browser
+       chrome (address bar) appearing/disappearing never overflows the stage. */
+    width:min(100dvw,177.777dvh);
+    height:min(100dvh,56.25dvw);
     aspect-ratio:16/9;
     overflow:hidden;
     background:url('assets/bg.png') center / cover no-repeat;
@@ -353,7 +365,7 @@
   #overlayText{font-size:clamp(20px,2vw,40px);}
 
   /* ===== Tap hand — pointer-finger asset whose fingertip lands on the
-     tap target. The asset (hand-nudge.svg) has its fingertip at ~28%
+     tap target. The asset (Swipe Up And Click 2.svg) has its fingertip at ~28%
      from the left edge and ~9% from the top edge of the image. We
      position the .tap-hand element with its CSS top-left at the TARGET,
      then translate by (-28%, -9%) so the fingertip slides up to land on
@@ -410,18 +422,6 @@
     0%  {transform:translate(-50%,-50%) scale(1);opacity:1;}
     100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(0);opacity:0;}
   }
-  .confetti{
-    position:absolute;
-    pointer-events:none;
-    z-index:95;
-    border-radius:2px;
-    --dx:0px;--dy:200px;--r:360deg;
-    animation:confettiFly 1.8s cubic-bezier(.2,.6,.4,1) forwards;
-  }
-  @keyframes confettiFly{
-    0%  {transform:translate(0,0) rotate(0);opacity:1;}
-    100%{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0;}
-  }
   /* Water-themed bubble confetti — translucent bubbles (optionally tinted in
      the four game colors) that float up and out with a gentle drift, then
      pop. Replaces the paper-piece confetti for pond/win celebrations. */
@@ -476,10 +476,10 @@
     background-repeat:no-repeat;
     z-index:5;
   }
-  .counter-bar.theme-pink  {background-image:url('assets/pink-counter.svg');}
-  .counter-bar.theme-green {background-image:url('assets/green-counter.svg');}
-  .counter-bar.theme-red   {background-image:url('assets/red-counter.svg');}
-  .counter-bar.theme-yellow{background-image:url('assets/yellow-counter.svg');}
+  .counter-bar.theme-pink  {background-image:url('assets/pink-counter.webp');}
+  .counter-bar.theme-green {background-image:url('assets/green-counter.webp');}
+  .counter-bar.theme-red   {background-image:url('assets/red-counter.webp');}
+  .counter-bar.theme-yellow{background-image:url('assets/yellow-counter.webp');}
 
   /* Layout-only container — no background, sheet, tint, or shadow on top of
      the counter SVG. Fish appear directly inside the original blue water. */
@@ -704,10 +704,10 @@
     opacity:0;transform:translateX(-50px);
     animation:slideIn .6s ease forwards;
   }
-  .summary-bar.pink  {top:2%;  background-image:url('assets/pink-counter.svg');}
-  .summary-bar.green {top:25%; background-image:url('assets/green-counter.svg');animation-delay:.15s;}
-  .summary-bar.red   {top:48%; background-image:url('assets/red-counter.svg');animation-delay:.3s;}
-  .summary-bar.yellow{top:71%; background-image:url('assets/yellow-counter.svg');animation-delay:.45s;}
+  .summary-bar.pink  {top:2%;  background-image:url('assets/pink-counter.webp');}
+  .summary-bar.green {top:25%; background-image:url('assets/green-counter.webp');animation-delay:.15s;}
+  .summary-bar.red   {top:48%; background-image:url('assets/red-counter.webp');animation-delay:.3s;}
+  .summary-bar.yellow{top:71%; background-image:url('assets/yellow-counter.webp');animation-delay:.45s;}
   @keyframes slideIn{to{opacity:1;transform:translateX(0);}}
 
   /* The active summary row celebrates by animating only its CONTENTS —
@@ -800,7 +800,7 @@
   /* ===== Start screen ===== */
   .start-banner{
     position:absolute;inset:0;
-    background-image:url('assets/PRE-LBD-2.png');
+    background-image:url('assets/PRE-LBD-2.jpg');
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
@@ -992,9 +992,64 @@
       animation-duration:.001s !important;animation-iteration-count:1 !important;
     }
   }
+
+  /* ===== Rotate-to-landscape prompt =====================================
+     This game is a fixed 16:9 landscape experience. On a portrait phone the
+     stage would shrink to a tiny strip, so we cover the screen with a
+     friendly "please rotate" prompt instead. Shown ONLY on portrait touch
+     devices (a desktop window that happens to be tall keeps playing). */
+  #rotate-screen{
+    position:fixed;inset:0;
+    display:none;
+    z-index:100000;
+    flex-direction:column;
+    align-items:center;justify-content:center;
+    text-align:center;
+    padding:max(24px,env(safe-area-inset-top)) 24px
+            max(24px,env(safe-area-inset-bottom));
+    background:
+      radial-gradient(120% 80% at 50% 20%, rgba(150,235,255,.35), rgba(10,90,140,0) 60%),
+      linear-gradient(180deg,#1488c0 0%, #0b6298 45%, #06416e 80%, #042c4f 100%);
+    color:#fff;
+    font-family:'Lilita One',sans-serif;
+  }
+  #rotate-screen .rotate-phone{
+    font-size:clamp(64px,22vw,120px);
+    line-height:1;
+    animation:rotateHint 2.2s ease-in-out infinite;
+    filter:drop-shadow(0 8px 16px rgba(0,20,45,.5));
+  }
+  #rotate-screen .rotate-title{
+    margin-top:.5em;
+    font-size:clamp(26px,7vw,44px);
+    text-shadow:0 3px 0 rgba(0,0,0,.25);
+  }
+  #rotate-screen .rotate-sub{
+    margin-top:.35em;
+    font-size:clamp(15px,4.2vw,22px);
+    opacity:.9;
+    max-width:18em;
+  }
+  @keyframes rotateHint{
+    0%,100%{transform:rotate(0deg);}
+    20%,70%{transform:rotate(-90deg);}
+  }
+  /* Touch devices in portrait → show the prompt and hide the game. */
+  @media (orientation:portrait) and (pointer:coarse){
+    #rotate-screen{display:flex;}
+    #game{display:none;}
+  }
 </style>
 </head>
 <body>
+
+<!-- Shown only on portrait touch devices — see #rotate-screen CSS above. -->
+<div id="rotate-screen" aria-hidden="true">
+  <div class="rotate-phone">📱</div>
+  <div class="rotate-title">Please rotate your device</div>
+  <div class="rotate-sub">Turn your phone sideways to play the fish counting game!</div>
+</div>
+
 <div id="game">
 
   <!-- ============ SCREEN: START BANNER ============ -->
@@ -1123,12 +1178,12 @@ const PONDS = {
   yellow: { count:5, fish:'assets/fish-yellow.png', pond:'assets/pond-yellow.png', word:'yellow' }
 };
 
-/* Animated GIFs are used ONLY during the jump (pop + flight to counter). */
+/* Animated fish (WebP) used ONLY during the jump (pop + flight to counter). */
 const PONDS_GIF = {
-  pink:   'assets/pink-fish-anime.gif',
-  green:  'assets/green-fish-anime.gif',
-  red:    'assets/red-fish-anime.gif',
-  yellow: 'assets/yellow-fish-anime.gif'
+  pink:   'assets/pink-fish-anime.webp',
+  green:  'assets/green-fish-anime.webp',
+  red:    'assets/red-fish-anime.webp',
+  yellow: 'assets/yellow-fish-anime.webp'
 };
 
 /* Positions for the SELECTION grid + POPUP transition.
@@ -1190,43 +1245,6 @@ const COUNTING_FISH_POSITIONS = {
   ]
 };
 
-/* Slot layout — the lane is anchored on the SHELL side. Newest collected
-   fish sits at `rightAnchor` with a small visible gap to the shell; every
-   previous fish sits to its LEFT with fixed small spacing. When a new fish
-   joins, existing fish shift left by exactly one slot — a continuous packed
-   lane that grows leftward. Spacing is clamped so even the leftmost slot
-   stays inside the row for the current pond's target count. */
-function getFinalSlots(){
-
-  const slots = [];
-
-  const total = collectedFish.length;
-
-  if(total <= 0) return slots;
-
-  // safe padding inside bar
-  const startX = 10;
-
-  // spacing between fish
-  const gap = 11;
-
-  for(let i = 0; i < total; i++){
-
-    slots.push({
-      x: startX + (i * gap),
-      y: 50
-    });
-
-  }
-
-  return slots;
-}
-
-/* Smooth rearrange — every fish transitions toward its slot. When a new
-   fish has just been appended, existing fish shift LEFT by one slot and
-   the new fish floats from the LEFT entry point to the rightmost slot
-   (nearest the shell). All transitions share the same CSS easing for a
-   coordinated lane shift. */
 /* Horizontal slot (in % of the counter row width) for the index-th
    collected fish. Fish fill the bar left → right with even spacing based
    on the pond's total target, stopping before the shell at the right. */
@@ -1237,24 +1255,6 @@ function getCounterSlotPct(index){
 
   const gap = (rightPad - leftPad) / (target - 1);
   return leftPad + index * gap;
-}
-
-function layoutCollectedFishSmooth(){
-
-  const slots = getFinalSlots();
-
-  collectedFish.forEach((fish, index)=>{
-
-    const slot = slots[index];
-
-    fish.style.transition =
-      'left 850ms cubic-bezier(.22,.9,.25,1), top 850ms cubic-bezier(.22,.9,.25,1)';
-
-    fish.style.left = slot.x + '%';
-    fish.style.top = slot.y + '%';
-
-  });
-
 }
 
 /* Cubic-bezier(.22,.9,.25,1) easing for the fish jump. */
@@ -1551,36 +1551,171 @@ function playSuccess(){
   });
 }
 
-function speak(text){
-  if (!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = .72; u.pitch = 1.12; u.volume = .95;
-  const voices = speechSynthesis.getVoices();
-  const preferred = voices.find(v => /female|samantha|karen|google.*us|google.*uk/i.test(v.name)) || voices[0];
-  if (preferred) u.voice = preferred;
 
-  /* Duck the background music for the duration of this narration, then
-     restore it. A safety timer guarantees the hold is released even if the
-     browser doesn't fire onend (e.g. when a later speak() cancels this one). */
+/* ============ RECORDED VOICE-OVER ============
+   Real recorded narration (assets/lbd2-VO/*.ogg) replaces the synthetic
+   speech. Each line is one file; the typewriter bubbles reveal their words
+   in sync with the matching VO (see revealWordsSynced). Background music is
+   ducked while a VO plays and restored when it ends. */
+const VO_DIR = 'assets/lbd2-VO/';
+
+/* Spoken numbers, played as each fish lands on the counter. */
+const NUMBER_VO = {
+  1:'one.ogg', 2:'two.ogg', 3:'three.ogg', 4:'four.ogg', 5:'five.ogg',
+  6:'six.ogg', 7:'seven.ogg', 8:'eight.ogg', 9:'nine.ogg'
+};
+/* "{count} {colour} fishes" — used on pond-complete and on the summary rows.
+   Recorded counts match the pond targets (pink 8, green 7, red 6, yellow 5). */
+const POND_COUNT_VO = {
+  pink:'8 pink fishes.ogg', green:'7 green fishes.ogg',
+  red:'6 red fishes.ogg',  yellow:'5 yellow fishes.ogg'
+};
+const VO = {
+  choosePond:  'chose a pond.ogg',
+  chooseNext:  'Choose the next pond!.ogg',
+  letsCount:   'Let us count the fish in each pond.ogg',
+  tapFish:     'Tap on each fish one by one.ogg',
+  countPrompt: 'count the fish.ogg',
+  wellDone:    'well done.ogg',
+  allDone:     'well done we counted all the fish.ogg',
+  click:       'Soft magical click sound.ogg'
+};
+
+/* Single active VO slot — starting a new line stops and releases the previous
+   one so the music-duck ref-count stays balanced (a paused element never
+   fires `ended`, so we release its hold explicitly here). */
+let currentVOAudio = null;
+let currentVORelease = null;
+function stopCurrentVO(){
+  if (currentVOAudio){
+    try { currentVOAudio.pause(); } catch(e){}
+    currentVOAudio.onended = null;
+    currentVOAudio.onerror = null;
+    currentVOAudio = null;
+  }
+  if (currentVORelease){ currentVORelease(); currentVORelease = null; }
+}
+function playVOFile(file){
+  if (!file) return null;
+  stopCurrentVO();
+  const audio = new Audio(VO_DIR + encodeURIComponent(file));
+  audio.preload = 'auto';
+  currentVOAudio = audio;
+
   duckBgm();
   let released = false;
   const release = () => { if (!released){ released = true; releaseBgm(); } };
-  u.onend = release;
-  u.onerror = release;
-  setTimeout(release, Math.min(9000, 600 + text.length * 90));
+  currentVORelease = release;
+  audio.onended = release;
+  audio.onerror = release;
 
-  speechSynthesis.speak(u);
+  const p = audio.play();
+  /* Expose the play() promise so callers (e.g. banner autoplay) can tell
+     whether playback actually started or was blocked by autoplay policy. */
+  audio._playPromise = (p && p.then) ? p : Promise.resolve();
+  if (p && p.catch) p.catch(() => {/* release happens via the error event */});
+  return audio;
 }
-if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
 
-/* ============ TYPEWRITER ============ */
-async function typeText(el, text, speed = 50){
-  el.textContent = '';
-  for (let i = 0; i < text.length; i++){
-    el.textContent += text[i];
-    await wait(speed);
-  }
+/* Reveal `text` one word at a time, paced to the VO so each word lands on
+   screen as it is spoken. Driven by the audio clock (currentTime/duration);
+   if the audio never starts (blocked / missing), an estimated cadence reveals
+   the words and resolves so the game never stalls. */
+function revealWordsSynced(el, text, audio){
+  return new Promise(resolve => {
+    const tokens = text.trim().split(/\s+/);
+    const n = tokens.length;
+    let shown = -1, done = false, raf = 0, fallbackTimer = 0;
+
+    const showUpTo = (k) => {
+      k = Math.max(0, Math.min(n, k));
+      if (k === shown) return;
+      shown = k;
+      el.textContent = tokens.slice(0, k).join(' ');
+    };
+    showUpTo(0);
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      if (raf) cancelAnimationFrame(raf);
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      showUpTo(n);
+      resolve();
+    };
+
+    const tick = () => {
+      if (done) return;
+      const d = audio ? audio.duration : 0;
+      if (d && isFinite(d) && d > 0){
+        showUpTo(Math.ceil((audio.currentTime / d) * n));
+        if (audio.ended){ finish(); return; }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    if (audio){
+      audio.addEventListener('ended', finish, { once:true });
+      audio.addEventListener('error', finish, { once:true });
+      raf = requestAnimationFrame(tick);
+    }
+
+    /* Fallback: only kicks in if the audio clock isn't advancing by now. */
+    fallbackTimer = setTimeout(() => {
+      if (done) return;
+      const d = audio ? audio.duration : 0;
+      const playing = audio && audio.currentTime > 0 && d && isFinite(d) && d > 0;
+      if (playing) return;            // audio is fine — the rAF loop has it
+      let i = shown < 0 ? 0 : shown;
+      const step = () => {
+        if (done) return;
+        i++;
+        showUpTo(i);
+        if (i >= n){ finish(); return; }
+        fallbackTimer = setTimeout(step, 380);
+      };
+      step();
+    }, 1500);
+  });
+}
+
+/* Play a VO line and reveal the bubble text word-by-word in sync with it. */
+async function speakAndType(el, text, file){
+  const audio = playVOFile(file);
+  await revealWordsSynced(el, text, audio);
+}
+
+/* Start-banner greeting — the banner art reads "COUNT THE FISH", so the genie
+   voices that same line as the intro hook. We try to play it AUTOMATICALLY on
+   load (see tryAutoplayBannerVO); if the browser blocks autoplay before a user
+   gesture, the guard is reset so the first real interaction (a tap on the
+   banner scene, or the "Let's go" button) plays it instead.
+   Plays at most once, guarded by `bannerVOPlayed`. */
+let bannerVOPlayed = false;
+function playBannerVO(){
+  if (bannerVOPlayed) return null;
+  bannerVOPlayed = true;
+  return playVOFile(VO.countPrompt);
+}
+/* Attempt to auto-play the banner VO the moment the page is ready. Autoplay
+   with sound is blocked by most browsers until the user interacts; if the
+   attempt is rejected we undo the guard so a tap replays the line cleanly. */
+function tryAutoplayBannerVO(){
+  const audio = playBannerVO();
+  if (!audio || !audio._playPromise) return;
+  audio._playPromise.catch(() => { bannerVOPlayed = false; });
+}
+/* Resolve when a VO clip finishes (or after a safety cap), so the start
+   sequence can wait for the banner line before transitioning. */
+function voEnded(audio, maxMs = 4000){
+  return new Promise(resolve => {
+    if (!audio){ resolve(); return; }
+    let done = false;
+    const fin = () => { if (done) return; done = true; resolve(); };
+    audio.addEventListener('ended', fin, { once:true });
+    audio.addEventListener('error', fin, { once:true });
+    setTimeout(fin, maxMs);
+  });
 }
 
 /* ============ FILL SELECTION FISHES ============ */
@@ -1637,27 +1772,6 @@ function spawnSparkles(x, y, parent, count = 8){
     s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
     parent.appendChild(s);
     setTimeout(() => s.remove(), 700);
-  }
-}
-
-function spawnConfetti(parent, count = 60){
-  const colors = ['#ffd23f','#ff4d6d','#06d6a0','#4cc9f0','#f72585','#ff8500','#7209b7','#ffffff'];
-  for (let i = 0; i < count; i++){
-    const c = document.createElement('div');
-    c.className = 'confetti';
-    c.style.left = (38 + Math.random() * 24) + '%';
-    c.style.top  = (35 + Math.random() * 20) + '%';
-    c.style.width  = (6 + Math.random() * 8) + 'px';
-    c.style.height = (10 + Math.random() * 8) + 'px';
-    c.style.background = colors[Math.floor(Math.random() * colors.length)];
-    const angle = (Math.random() - 0.5) * Math.PI * 1.6 - Math.PI / 2;
-    const dist  = 220 + Math.random() * 280;
-    c.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-    c.style.setProperty('--dy', (Math.sin(angle) * dist + 220) + 'px');
-    c.style.setProperty('--r',  (Math.random() * 720 - 360) + 'deg');
-    c.style.animationDuration = (1.4 + Math.random() * .8) + 's';
-    parent.appendChild(c);
-    setTimeout(() => c.remove(), 2300);
   }
 }
 
@@ -1851,9 +1965,8 @@ async function runChoosePondGuide(isNext = false){
   textEl.textContent = '';
 
   await wait(450);
-  speak(text);
-  await typeText(textEl, text);
-  await wait(2000);
+  await speakAndType(textEl, text, isNext ? VO.chooseNext : VO.choosePond);
+  await wait(900);
   guide.classList.add('guide-vanish');
 
   await wait(550);
@@ -1870,6 +1983,7 @@ document.querySelectorAll('.pond').forEach(p => {
     noteUserInteraction();
     /* Stop the attention pulse the moment the child engages. */
     clearNextPondTarget();
+    playVOFile(VO.click);
     showPondPopup(p.dataset.color);
   });
 });
@@ -1950,9 +2064,8 @@ async function startCounting(color){
     textEl.textContent = '';
 
     await wait(500);
-    speak('Tap on each fish one by one.');
-    await typeText(textEl, 'Tap on each fish one by one.');
-    await wait(2000);
+    await speakAndType(textEl, 'Tap on each fish one by one.', VO.tapFish);
+    await wait(900);
     guide.classList.add('guide-vanish');
 
     await wait(550);
@@ -2098,7 +2211,7 @@ function onFishTap(e, fishEl){
     numEl.classList.remove('pop');
     void numEl.offsetWidth;
     numEl.classList.add('pop');
-    speak(String(currentCount));
+    playVOFile(NUMBER_VO[currentCount] || (currentCount + '.ogg'));
 
     /* The fish already flew straight to its slot, so there's no follow-up
        move. PAUSE_MS is kept only to time the pond-complete celebration. */
@@ -2124,7 +2237,7 @@ async function onPondComplete(){
   const stage = document.getElementById('game');
   spawnBubbleConfetti(stage, 46);
   spawnWaterBurst(stage, 5);
-  speak(target + ' ' + PONDS[currentColor].word + ' fishes!');
+  playVOFile(POND_COUNT_VO[currentColor]);
 
   completed.add(currentColor);
   const selPond = document.querySelector('.pond[data-color="' + currentColor + '"]');
@@ -2242,10 +2355,11 @@ async function showPostLbd(){
   const msgEl = document.getElementById('winMsg');
   if (msgEl) msgEl.textContent = msg;
 
-  /* Big celebratory chime + applause + narration. */
+  /* Big celebratory chime + applause. The "well done, we counted all the
+     fish" VO from the summary finale carries over into this screen, so we
+     don't layer a second narration line on top of it here. */
   playSuccess();
   setTimeout(() => playApplause(2600), 150);
-  speak('Great job! ' + msg);
 
   /* Water-themed bubble confetti in the four game colours — one big burst
      then two follow-ups. */
@@ -2301,9 +2415,11 @@ async function showDoneCelebration(text){
   duckBgm();
   playApplause(1800);
 
-  await wait(300);
-  await typeText(textEl, text);
+  /* Let the "{n} {colour} fishes" line (started in onPondComplete) finish
+     before the genie says "Well done!" so the two don't talk over each other. */
   await wait(1500);
+  await speakAndType(textEl, text, VO.wellDone);
+  await wait(1000);
 
   guide.classList.add('guide-vanish');
   await wait(550);
@@ -2331,9 +2447,8 @@ async function showCountFishOverlay(){
   textEl.textContent = '';
 
   await wait(450);
-  speak('Let us count the fish in each pond.');
-  await typeText(textEl, 'Let us count the fish in each pond.');
-  await wait(2000);
+  await speakAndType(textEl, 'Let us count the fish in each pond.', VO.letsCount);
+  await wait(900);
   guide.classList.add('guide-vanish');
   dim.style.transition = 'opacity .5s ease';
   dim.style.opacity = '0';
@@ -2383,7 +2498,7 @@ async function runSummarySequence(){
 
     caption.textContent = s.text;
     caption.classList.add('show');
-    speak(s.text);
+    playVOFile(POND_COUNT_VO[s.color]);
 
     /* Soft circular glow behind the number — confined to the shell, so
        the rest of the bar (background, fish, edges) stays exactly as it
@@ -2442,15 +2557,37 @@ async function runSummarySequence(){
 
   caption.textContent = 'Wonderful! You counted all the fish!';
   caption.classList.add('show');
-  speak('Wonderful! You counted all the fish!');
+  playVOFile(VO.allDone);
 }
 
 /* ============ INIT ============ */
 fillSelectionPonds();
 
+/* Try to greet the child with the banner VO right away (before any tap).
+   Falls back to playing on the first interaction if autoplay is blocked. */
+tryAutoplayBannerVO();
+
+/* Greet on the banner: a tap anywhere on the banner scene plays the
+   "count the fish" line (the first tap also unlocks audio). Taps on the
+   "Let's go" button are excluded — that path plays the line itself below. */
+document.getElementById('screen-start').addEventListener('pointerdown', (e) => {
+  if (e.target.closest('#letsGoBtn')) return;
+  ensureAudio();
+  playBannerVO();
+});
+
 document.getElementById('letsGoBtn').addEventListener('click', async () => {
   ensureAudio();
   startBgMusic();
+
+  /* If the child hasn't already triggered the banner line, say it now over
+     the banner and let it finish before moving on; otherwise a soft click. */
+  if (!bannerVOPlayed){
+    await voEnded(playBannerVO(), 3500);
+  } else {
+    playVOFile(VO.click);
+  }
+
   document.getElementById('screen-start').classList.remove('active');
   document.getElementById('screen-select').classList.add('active');
   await wait(300);
